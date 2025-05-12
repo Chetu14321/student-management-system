@@ -8,16 +8,9 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB using the connection string stored in the .env file
-mongoose.connect(process.env.CLOUD_DB, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => {
-  console.log("Connected to MongoDB Atlas");
-})
-.catch((err) => {
-  console.error("MongoDB connection error:", err);
-});
+mongoose.connect(process.env.CLOUD_DB)
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 // Mongoose Schema and Model
 const studentSchema = new mongoose.Schema({
@@ -55,8 +48,13 @@ app.get("/students/all", async (req, res) => {
   }
 });
 
+// ✅ Root route to avoid 404 on base URL
+app.get("/", (req, res) => {
+  res.send("Student Management System Backend is running.");
+});
+
 // Start server
-const PORT = process.env.PORT || 5000;  // Allow for dynamic port setting in cloud environments
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
